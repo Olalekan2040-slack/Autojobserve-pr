@@ -4,12 +4,24 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from autojobserve.schemas import * 
 from fastapi import HTTPException
-# import psycopg2
+import os
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+db_host = os.getenv('DB_HOST')
+db_port = os.getenv('DB_PORT')
+db_name = os.getenv('DB_NAME')
+
+# Construct the database URL
+DATABASE_URL = f"mysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 
 # DATABASE_URL = "mysql+pymysql://root:admin@mysql:3306/autojob"
-DATABASE_URL = "mysql://avnadmin:AVNS_K2mgJXx4KdSbaISmPd9@autojobserve-sharafdeenolaleken-f53d.a.aivencloud.com:12273/defaultdb"
+# DATABASE_URL = "mysql://avnadmin:AVNS_K2mgJXx4KdSbaISmPd9@autojobserve-sharafdeenolaleken-f53d.a.aivencloud.com:12273/defaultdb"
 
 Base = declarative_base()
 
