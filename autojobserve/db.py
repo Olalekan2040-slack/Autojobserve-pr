@@ -4,31 +4,30 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from autojobserve.schemas import * 
 from fastapi import HTTPException
-import os
 from dotenv import load_dotenv
+import os
 
-# Load environment variables from .env file
+# Load the environment variables from the .env file
 load_dotenv()
 
-db_user = os.getenv('DB_USER')
-db_password = os.getenv('DB_PASSWORD')
-db_host = os.getenv('DB_HOST')
-db_port = os.getenv('DB_PORT')
-db_name = os.getenv('DB_NAME')
+# Retrieve the variables
+database_url = os.getenv("DATABASE_URL")
 
-# Construct the database URL
-DATABASE_URL = f"mysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
 
 
 # DATABASE_URL = "mysql+pymysql://root:admin@mysql:3306/autojob"
-# DATABASE_URL = "mysql://avnadmin:AVNS_K2mgJXx4KdSbaISmPd9@autojobserve-sharafdeenolaleken-f53d.a.aivencloud.com:12273/defaultdb"
 
+                
 Base = declarative_base()
+
+if not database_url:
+    raise ValueError("DATABASE_URL is not set. Please check your .env file or environment variables.")
 
 
 try:
     # Create a database engine
-    engine = create_engine(DATABASE_URL)
+    engine = create_engine(database_url)
 
 
     # Create a session factory
@@ -39,3 +38,11 @@ except SQLAlchemyError as e:
     error_message = f"Error connecting to the database: {str(e)}"
     print(error_message)
     raise HTTPException(status_code=500, detail=error_message)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
