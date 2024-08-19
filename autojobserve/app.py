@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from autojobserve.routers import user
 from autojobserve.dummy_jobs import create_dummy_jobs
 from fastapi.middleware.cors import CORSMiddleware
-
+from autojobserve.auth import auth
 app = FastAPI()
 
 create_dummy_jobs()
@@ -20,4 +20,5 @@ app.add_middleware(
 )
 
 # Include API routes
-app.include_router(user)
+# app.include_router(user)
+app.include_router(auth)

@@ -7,15 +7,14 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-username = os.getenv("username")
-password = os.getenv("mypassword")
+password = os.getenv("MAIL_PASSWORD")
 
 
 
 # Connection Configuration for sending a confirmation message.
 conf = ConnectionConfig(
     MAIL_USERNAME = "olalekanquadri58@gmail.com",
-    MAIL_PASSWORD= 'dbmx bgfq jxif hjxw',
+    MAIL_PASSWORD= password,
     MAIL_FROM = "test@email.com",
     MAIL_PORT = 587,
     MAIL_SERVER = "smtp.gmail.com",
