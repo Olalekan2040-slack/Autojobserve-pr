@@ -1,0 +1,75 @@
+version: '3'
+services:
+ 
+
+  selenium-hub-auto:
+    image: selenium/hub:latest
+    container_name: selenium-hub-auto
+    ports:
+      - 4442:4442
+      - 4443:4443
+      - 4444:4444
+
+  chrome:
+    image: selenium/node-chrome:beta
+    shm_size: 2gb
+    depends_on:
+      selenium-hub-auto:
+        condition: service_started
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub-auto
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  edge:
+    image: selenium/node-edge:beta
+    shm_size: 2gb
+    depends_on:
+      selenium-hub-auto:
+        condition: service_started
+    volumes:
+      - files:/app/CV
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub-auto
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  # mysql:
+  #   image: mysql:8.0
+  #   restart: always
+  #   environment:
+  #     - MYSQL_DATABASE=autojob
+  #     - MYSQL_PASSWORD=4444
+  #     - MYSQL_ROOT_PASSWORD=admin
+  #   ports:
+  #     - 3307:3306
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "mysql", "-u", "root", "-padmin"]
+  #     timeout: 20s
+  #     retries: 10
+  #   volumes:
+  #     - ./scripts:/docker-entrypoint-initdb.d
+  #     - mysql-data:/var/lib/mysql
+
+  autojob-serve-app: 
+    build: .
+    ports:
+      - 8000:8000
+
+    depends_on:
+      # mysql:
+      #   condition: service_healthy
+      selenium-hub-auto: 
+        condition: service_started  
+    volumes:
+       - ./autojobserve/app:/app  
+
+
+
+volumes:
+  autojob: {}
+  files: {}
+  mysql-data: {}
+
+networks:
+  selenium:
