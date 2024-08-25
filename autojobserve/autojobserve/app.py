@@ -3,7 +3,10 @@ sys.path.append('.')
 
 from fastapi import FastAPI
 from autojobserve.routers import user
-from autojobser.jobs import jobs
+from autojobserve.jobs import jobs
+from autojobserve.feedback import feedback
+from autojobserve.profile import profile
+from autojobserve.notifications import notifications
 from autojobserve.dummy_jobs import create_dummy_jobs
 from fastapi.middleware.cors import CORSMiddleware
 from autojobserve.auth import auth
@@ -24,3 +27,6 @@ app.add_middleware(
 # app.include_router(user)
 app.include_router(auth)
 app.include_router(jobs)
+app.include_router(feedback)
+app.include_router(profile)
+app.include_router(notifications)
